@@ -8,3 +8,4 @@ npx tsc --init
 ## Unit Testing ##
 npm i mocha chai chai-http
 npm i @types/mocha @types/chai @types/chai-http -D
+npm i @faker-js/faker -D

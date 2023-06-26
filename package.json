@@ -34,6 +34,7 @@
     "pino-pretty": "^10.0.0"
   },
   "devDependencies": {
+    "@faker-js/faker": "^8.0.2",
     "@types/chai": "^4.3.5",
     "@types/chai-http": "^4.2.0",
     "@types/config": "^3.3.0",
