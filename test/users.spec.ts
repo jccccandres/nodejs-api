@@ -13,10 +13,16 @@ before(async () => {
 
 describe("Users", () => {
   let Cookies = "";
-  let email = faker.internet.email();
-  let username = faker.internet.userName();
-  let password = faker.internet.password();
   let _id = "";
+
+  const admin_email = "";
+  const admin_password = "";
+  const email = faker.internet.email();
+  const username = faker.internet.userName();
+  const password = faker.internet.password();
+  const new_email = faker.internet.email();
+  const new_username = faker.internet.userName();
+  const new_password = faker.internet.password();
 
   describe("/Post User", () => {
     it('should create new user', async () => {
@@ -31,19 +37,20 @@ describe("Users", () => {
         chai.expect(res.status).to.equal(201);
         chai.expect(res.body).to.have.property('email', email);
         chai.expect(res.body).to.have.property('username', username);
+
+        _id = res.body._id;
     })
   })
 
   describe("Login", () => {
-    it('should success if credentials is valid', async () => {
+    it('should login successfully', async () => {
       const res = await chai.request(app)
         .post('/auth/login')
-        .send({'email': email, 'password': password})
+        .send({'email': admin_email, 'password': admin_password})
 
       chai.expect(res.status).to.equal(200);
       chai.expect(res.headers['set-cookie']).to.not.equal(null);
-      
-      _id = res.body._id;
+
       Cookies = res.headers['set-cookie'].pop().split(';')[0];
     })
   })
@@ -66,6 +73,38 @@ describe("Users", () => {
       chai.expect(res.status).to.equal(200);
       chai.expect(res.body).to.have.property('email', email);
       chai.expect(res.body).to.have.property('username', username);
+    })
+  })
+
+  describe("/Patch User", () => {
+    it('should Update user details', async () => {
+      const res = await chai.request(app)
+        .patch('/users/' + _id)
+        .send({'email': new_email, 'username': new_username, 'password': new_password});
+
+      chai.expect(res.status).to.equal(200);
+      chai.expect(res.body).to.have.property('email', new_email);
+      chai.expect(res.body).to.have.property('username', new_username);
+    })
+  })
+
+  describe("/Delete User", () => {
+    it('should Delete a user', async () => {
+      const res = await chai.request(app)
+        .delete('/users/' + _id)
+        .set('Cookie', Cookies);
+      
+      chai.expect(res.status).to.equal(200);
+    })
+  })
+
+  describe("Logout", () => {
+    it('should logout successfully', async () => {
+      const res = await chai.request(app)
+        .post('/auth/logout')
+        .set('Cookie', Cookies);
+
+      chai.expect(res.status).to.equal(200);
     })
   })
 })
